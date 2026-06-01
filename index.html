@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UrbanBuild AI — Site Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0A0A0F;--white:#F5F4F0;--orange:#E8581C;--orange-h:#FF6B2B;
+  --slate:#13151E;--steel:#1C2030;--card:#222636;--border:#2C3347;
+  --muted:#7A8499;--green:#22D37E;--amber:#F5A623;--red:#E84040;--blue:#4B8EFF;
+}
+html,body{height:100%;overflow:hidden;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;}
+.screen{display:none;width:100vw;height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* LOGIN */
+#s-login{background:var(--black);align-items:center;justify-content:center;position:relative;overflow:hidden;}
+#s-login::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(232,88,28,.12),transparent 70%);top:-100px;right:-100px;pointer-events:none;}
+#s-login::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(75,142,255,.06),transparent 70%);bottom:-80px;left:-80px;pointer-events:none;}
+.login-wrap{width:420px;position:relative;z-index:1;}
+.wordmark{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-0.5px;}
+.wordmark span{color:var(--orange);}
+.login-brand .wordmark{font-size:28px;margin-bottom:6px;}
+.login-brand p{color:var(--muted);font-size:13px;margin-bottom:28px;}
+.login-box{background:var(--slate);border:1px solid var(--border);border-radius:16px;padding:32px;}
+.login-box h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;margin-bottom:6px;}
+.login-box .sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:.8px;}
+.form-input,.form-select{width:100%;background:var(--steel);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--white);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;}
+.form-input:focus,.form-select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(232,88,28,.15);}
+.form-select option{background:var(--steel);}
+.login-submit{width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-top:6px;}
+.login-submit:hover{background:var(--orange-h);}
+.login-trust{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px;}
+.trust-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.trust-item i{color:var(--green);font-size:12px;}
+
+/* TOPNAV */
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:54px;background:var(--slate);border-bottom:1px solid var(--border);flex-shrink:0;}
+.wordmark-sm{font-size:16px;}
+.nav-center{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.notif-btn{position:relative;width:34px;height:34px;border-radius:8px;background:var(--steel);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);}
+.notif-badge{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background:var(--red);border-radius:50%;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--slate);}
+.av-btn{width:34px;height:34px;border-radius:50%;background:rgba(232,88,28,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--orange);cursor:pointer;border:1px solid rgba(232,88,28,.3);}
+.role-pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(75,142,255,.12);color:var(--blue);}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:210px;background:var(--slate);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.sidebar::-webkit-scrollbar{width:0;}
+.sb-section{padding:14px 16px 5px;font-size:10px;font-weight:600;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;cursor:pointer;font-size:13px;color:var(--muted);border-left:2px solid transparent;transition:all .12s;user-select:none;}
+.nav-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--white);}
+.nav-item.active{background:rgba(232,88,28,.1);color:var(--orange);border-left-color:var(--orange);}
+.sb-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;}
+.sb-user:hover{background:var(--steel);}
+.sb-user .av{width:30px;height:30px;border-radius:50%;background:rgba(232,88,28,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--orange);flex-shrink:0;}
+.sb-user .name{font-size:12px;font-weight:500;}
+.sb-user .role{font-size:11px;color:var(--muted);}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:24px;background:var(--black);}
+.main::-webkit-scrollbar{width:5px;}
+.main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.page-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-.5px;margin-bottom:4px;}
+.page-sub{color:var(--muted);font-size:13px;margin-bottom:22px;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:600;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.sc.o::before{background:var(--orange)}.sc.g::before{background:var(--green)}.sc.a::before{background:var(--amber)}.sc.b::before{background:var(--blue)}
+.sc-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;line-height:1;margin-bottom:5px;}
+.sc-lbl{font-size:12px;color:var(--muted);}
+.sc-delta{font-size:11px;margin-top:8px;}
+.du{color:var(--green)}.dd{color:var(--red)}.dw{color:var(--amber)}
+
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+.span2{grid-column:1/-1;}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.pg{background:rgba(34,211,126,.12);color:var(--green);}
+.pa{background:rgba(245,166,35,.12);color:var(--amber);}
+.pr{background:rgba(232,64,64,.12);color:var(--red);}
+.pb{background:rgba(75,142,255,.12);color:var(--blue);}
+.po{background:rgba(232,88,28,.12);color:var(--orange);}
+.pm{background:rgba(122,132,153,.12);color:var(--muted);}
+.pdot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-p{background:var(--orange);color:#fff;}.btn-p:hover{background:var(--orange-h);}
+.btn-g{background:transparent;color:var(--muted);border:1px solid var(--border);}.btn-g:hover{background:var(--steel);color:var(--white);}
+.btn-d{background:rgba(232,64,64,.1);color:var(--red);border:1px solid rgba(232,64,64,.25);}.btn-d:hover{background:rgba(232,64,64,.2);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{text-align:left;padding:8px 12px;color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border);}
+.tbl td{padding:10px 12px;border-bottom:1px solid rgba(44,51,71,.5);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.02);}
+
+/* PROGRESS BARS */
+.pbar{background:var(--steel);border-radius:4px;overflow:hidden;}
+.pfill{height:100%;border-radius:4px;}
+.pb-sm{height:5px;}.pb-md{height:8px;}.pb-lg{height:12px;}
+.co{background:var(--orange)}.cg{background:var(--green)}.ca{background:var(--amber)}.cb{background:var(--blue)}.cr{background:var(--red)}
+
+/* FEED */
+.feed-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(44,51,71,.5);}
+.feed-item:last-child{border-bottom:none;}
+.fdot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+
+/* ALERTS */
+.alert{border-radius:9px;padding:12px 14px;font-size:13px;display:flex;align-items:flex-start;gap:10px;}
+.alert i{flex-shrink:0;margin-top:1px;}
+.aw{background:rgba(232,88,28,.08);border:1px solid rgba(232,88,28,.2);}
+.ar{background:rgba(232,64,64,.08);border:1px solid rgba(232,64,64,.2);}
+.ag{background:rgba(34,211,126,.08);border:1px solid rgba(34,211,126,.2);}
+.ab{background:rgba(75,142,255,.08);border:1px solid rgba(75,142,255,.2);}
+
+/* MILESTONES */
+.ms-item{display:flex;align-items:center;gap:14px;padding:14px;background:var(--card);border-radius:10px;border:1px solid var(--border);margin-bottom:10px;}
+.ms-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.mi-done{background:rgba(34,211,126,.15);color:var(--green);}
+.mi-active{background:rgba(232,88,28,.15);color:var(--orange);}
+.mi-pend{background:rgba(44,51,71,.6);color:var(--muted);}
+.ms-body{flex:1;}
+.ms-title{font-weight:600;font-size:13px;margin-bottom:3px;}
+.ms-meta{font-size:11px;color:var(--muted);}
+.ms-actions{margin-left:auto;display:flex;gap:8px;flex-shrink:0;}
+
+/* HAZARDS */
+.hz{display:flex;align-items:flex-start;gap:14px;padding:14px;background:var(--card);border-radius:10px;margin-bottom:10px;border-left:3px solid;}
+.hz-r{border-left-color:var(--red);}
+.hz-a{border-left-color:var(--amber);}
+.hz-g{border-left-color:var(--green);}
+.hz-ico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hi-r{background:rgba(232,64,64,.12);color:var(--red);}
+.hi-a{background:rgba(245,166,35,.12);color:var(--amber);}
+.hi-g{background:rgba(34,211,126,.12);color:var(--green);}
+.hz-title{font-weight:600;font-size:13px;margin-bottom:3px;}
+.hz-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
+
+/* ASSETS */
+.asset-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.asset-ico{width:48px;height:48px;border-radius:10px;background:rgba(232,88,28,.1);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;}
+.asset-name{font-weight:600;font-size:14px;margin-bottom:2px;}
+.asset-meta{font-size:11px;color:var(--muted);margin-bottom:12px;}
+.meter{margin-bottom:8px;}
+.meter-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;}
+.meter-row span:first-child{color:var(--muted);}
+
+/* DIGITAL TWIN */
+.twin-view{background:rgba(75,142,255,.03);border:1px solid rgba(75,142,255,.1);border-radius:12px;height:230px;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;}
+.twin-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(75,142,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(75,142,255,.05) 1px,transparent 1px);background-size:28px 28px;}
+.bldg{display:flex;flex-direction:column-reverse;gap:2px;position:relative;z-index:1;}
+.fl{height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;}
+.fl-done{background:rgba(34,211,126,.25);border:1px solid rgba(34,211,126,.5);color:var(--green);}
+.fl-active{background:rgba(232,88,28,.3);border:1px solid rgba(232,88,28,.6);color:var(--orange);animation:fpulse 2s infinite;}
+.fl-pend{background:rgba(44,51,71,.8);border:1px solid var(--border);color:var(--muted);}
+@keyframes fpulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(232,88,28,.3);}50%{opacity:.7;box-shadow:0 0 0 4px rgba(232,88,28,0);}}
+
+/* MOBILE / WORKER */
+#s-worker,#s-hazard,#s-hazard-confirm{background:var(--black);align-items:center;justify-content:center;flex-direction:column;}
+.mframe{width:360px;background:var(--slate);border-radius:24px;border:2px solid var(--border);overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.6);}
+.mhead{padding:20px 18px 18px;text-align:center;}
+.mhead h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;margin-bottom:4px;}
+.mhead p{font-size:12px;opacity:.8;}
+.mhead-orange{background:var(--orange);}
+.mhead-green{background:#1a7a4c;}
+.mhead-red{background:#8a1f1f;}
+.mbody{padding:16px;}
+.checkin-ok{background:rgba(34,211,126,.08);border:1px solid rgba(34,211,126,.2);border-radius:10px;padding:14px;text-align:center;margin-bottom:14px;}
+.checkin-ok h4{color:var(--green);font-size:14px;font-weight:600;margin-bottom:4px;}
+.checkin-ok p{font-size:11px;color:var(--muted);}
+.mtask{background:var(--steel);border-radius:9px;padding:12px;margin-bottom:8px;border-left:3px solid var(--orange);}
+.mtask.dim{border-left-color:var(--border);opacity:.6;}
+.mtask h5{font-size:13px;font-weight:600;margin-bottom:4px;}
+.mtask p{font-size:11px;color:var(--muted);}
+.mtask-pills{display:flex;gap:6px;margin-top:7px;}
+.mbtn{width:100%;padding:12px;border-radius:9px;border:none;font-weight:600;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;transition:all .15s;}
+.mbtn-p{background:var(--orange);color:#fff;}.mbtn-p:hover{background:var(--orange-h);}
+.mbtn-g{background:var(--steel);color:var(--muted);border:1px solid var(--border);}
+.mbtn-d{background:rgba(232,64,64,.15);color:var(--red);border:1px solid rgba(232,64,64,.25);}
+.mlabel{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:6px;display:block;}
+.htype-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.htype{background:rgba(232,64,64,.06);border:1px solid rgba(232,64,64,.2);border-radius:8px;padding:10px;text-align:center;font-size:12px;cursor:pointer;transition:all .15s;}
+.htype:hover,.htype.sel{background:rgba(232,64,64,.18);border-color:var(--red);}
+.mtext{width:100%;background:var(--steel);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;height:72px;resize:none;outline:none;}
+.mtext:focus{border-color:var(--orange);}
+.geo-box{background:var(--steel);border-radius:8px;padding:10px;margin:10px 0;font-size:12px;}
+.geo-label{color:var(--muted);font-size:11px;margin-bottom:4px;}
+.photo-box{background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:9px;font-size:11px;margin-bottom:10px;color:var(--amber);}
+.confirm-step{display:flex;align-items:center;gap:10px;padding:11px;background:rgba(34,211,126,.06);border:1px solid rgba(34,211,126,.18);border-radius:8px;margin-bottom:8px;font-size:12px;}
+.confirm-step .ck{color:var(--green);font-size:15px;flex-shrink:0;}
+.hid-box{background:var(--steel);border-radius:8px;padding:10px;font-size:12px;margin-top:10px;}
+.mback{margin-top:14px;display:flex;justify-content:center;gap:10px;}
+
+/* DELIVERY ROW */
+.del-row{display:flex;align-items:center;gap:14px;padding:12px;background:var(--card);border-radius:9px;border:1px solid var(--border);margin-bottom:8px;}
+.del-ico{width:38px;height:38px;border-radius:8px;background:rgba(75,142,255,.1);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+
+/* PROFILE */
+.pf-av{width:68px;height:68px;border-radius:50%;background:rgba(232,88,28,.15);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--orange);border:2px solid rgba(232,88,28,.3);}
+.cred-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(44,51,71,.5);font-size:13px;}
+.cred-row:last-child{border-bottom:none;}
+
+/* UTILS */
+.row{display:flex;align-items:center;gap:10px;}
+.row-sb{display:flex;align-items:center;justify-content:space-between;}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.mt8{margin-top:8px;}.mt12{margin-top:12px;}.mt16{margin-top:16px;}
+.mb8{margin-bottom:8px;}.mb12{margin-bottom:12px;}
+.text-muted{color:var(--muted);}.text-sm{font-size:12px;}.fw6{font-weight:600;}
+.api-row{display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--steel);border-radius:8px;margin-bottom:8px;font-size:13px;}
+.api-name{font-weight:500;margin-bottom:2px;}
+.api-meta{font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- =================== LOGIN =================== -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="wordmark" style="font-size:28px">Urban<span>Build</span> AI</div>
+      <p>Integrated Construction Intelligence Platform &mdash; Australia</p>
+    </div>
+    <div class="login-box">
+      <h2>Digital Passport Sign-In</h2>
+      <p class="sub">Access is controlled by Role-Based Access Control (RBAC). Your credentials determine your site permissions and zones.</p>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" value="user@urbanbuildai.com.au"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" value="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="role-sel">
+          <option value="pm">Project Manager / Developer</option>
+          <option value="worker">Site Worker / Subcontractor</option>
+          <option value="safety">Safety &amp; Compliance Officer</option>
+          <option value="logistics">Logistics &amp; Fleet Coordinator</option>
+          <option value="admin">UBA Administrator</option>
+          <option value="inspector">Government Inspector</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Active Site</label>
+        <select class="form-select">
+          <option>Southbank Tower &mdash; Melbourne CBD</option>
+          <option>Parramatta Station Precinct &mdash; Sydney</option>
+          <option>Queen&rsquo;s Wharf Precinct &mdash; Brisbane</option>
+        </select>
+      </div>
+      <button class="login-submit" onclick="doLogin()">Access Site Portal &nbsp;&rarr;</button>
+    </div>
+    <div class="login-trust">
+      <div class="trust-item"><i class="fas fa-shield-halved"></i> SOC2 Compliant</div>
+      <div class="trust-item"><i class="fas fa-server"></i> ACSC AU Residency</div>
+      <div class="trust-item"><i class="fas fa-lock"></i> MFA Enabled</div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== PM DASHBOARD =================== -->
+<div id="s-pm" class="screen">
+  <div class="topnav">
+    <div class="wordmark wordmark-sm">Urban<span>Build</span> AI</div>
+    <div class="nav-center"><div class="live-dot"></div>Southbank Tower &mdash; Melbourne CBD &nbsp;&middot;&nbsp; L18 Active &nbsp;&middot;&nbsp; Sync 47s ago</div>
+    <div class="nav-right">
+      <span class="role-pill">Project Manager</span>
+      <div class="notif-btn"><i class="fas fa-bell"></i><div class="notif-badge">3</div></div>
+      <div class="av-btn" onclick="pmGo('profile')">JM</div>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-section">Overview</div>
+      <div class="nav-item active" id="pnav-overview" onclick="pmGo('overview')"><i class="fas fa-chart-pie"></i> Dashboard</div>
+      <div class="nav-item" id="pnav-twin" onclick="pmGo('twin')"><i class="fas fa-cube"></i> Digital Twin</div>
+      <div class="sb-section">Project</div>
+      <div class="nav-item" id="pnav-milestones" onclick="pmGo('milestones')"><i class="fas fa-list-check"></i> Milestones</div>
+      <div class="nav-item" id="pnav-schedule" onclick="pmGo('schedule')"><i class="fas fa-calendar-days"></i> AI Schedule</div>
+      <div class="nav-item" id="pnav-claims" onclick="pmGo('claims')"><i class="fas fa-file-invoice-dollar"></i> Progress Claims</div>
+      <div class="sb-section">Site Operations</div>
+      <div class="nav-item" id="pnav-safety" onclick="pmGo('safety')"><i class="fas fa-triangle-exclamation"></i> Safety Events</div>
+      <div class="nav-item" id="pnav-assets" onclick="pmGo('assets')"><i class="fas fa-gears"></i> Asset Registry</div>
+      <div class="nav-item" id="pnav-subs" onclick="pmGo('subs')"><i class="fas fa-people-group"></i> Subcontractors</div>
+      <div class="sb-section">Account</div>
+      <div class="nav-item" id="pnav-profile" onclick="pmGo('profile')"><i class="fas fa-id-badge"></i> My Profile</div>
+      <div class="sb-footer">
+        <div class="sb-user" onclick="goLogin()">
+          <div class="av">JM</div>
+          <div><div class="name">James Miller</div><div class="role">Sign out</div></div>
+          <i class="fas fa-right-from-bracket" style="color:var(--muted);font-size:12px;margin-left:auto"></i>
+        </div>
+      </div>
+    </div>
+    <div class="main" id="pm-main">
+
+      <!-- OVERVIEW TAB -->
+      <div id="pt-overview" class="pt">
+        <div class="page-title">Project Command Centre</div>
+        <div class="page-sub">Southbank Tower &middot; 42-storey mixed-use &middot; <span style="color:var(--orange)">68% complete</span></div>
+        <div class="stat-grid">
+          <div class="sc o"><div class="sc-num" style="color:var(--orange)">68%</div><div class="sc-lbl">Project Completion</div><div class="sc-delta du"><i class="fas fa-arrow-trend-up"></i> +3% this week</div></div>
+          <div class="sc g"><div class="sc-num">247</div><div class="sc-lbl">Workers On-site Today</div><div class="sc-delta du"><i class="fas fa-arrow-up"></i> +12 vs yesterday</div></div>
+          <div class="sc a"><div class="sc-num" style="color:var(--amber)">3</div><div class="sc-lbl">Open Hazard Reports</div><div class="sc-delta dw"><i class="fas fa-triangle-exclamation"></i> 1 critical</div></div>
+          <div class="sc b"><div class="sc-num" style="color:var(--green)">$8.4M</div><div class="sc-lbl">Claimed to Date</div><div class="sc-delta du"><i class="fas fa-arrow-up"></i> $420k this month</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Critical Path Status</span><span class="pill pa"><span class="pdot"></span>At Risk</span></div>
+            <div class="mb8"><div class="row-sb mb8" style="font-size:12px"><span>Level 18 Formwork</span><span style="color:var(--amber)">+2 day delay</span></div><div class="pbar pb-sm"><div class="pfill ca" style="width:45%"></div></div></div>
+            <div class="mb8"><div class="row-sb mb8" style="font-size:12px"><span>Electrical Rough-in (L14&ndash;16)</span><span style="color:var(--green)">On track</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:82%"></div></div></div>
+            <div class="mb8"><div class="row-sb mb8" style="font-size:12px"><span>Curtain Wall Installation</span><span style="color:var(--muted)">Not started</span></div><div class="pbar pb-sm"><div class="pfill co" style="width:0%"></div></div></div>
+            <div class="alert aw mt12"><i class="fas fa-robot" style="color:var(--orange)"></i><div><strong>AI Prediction:</strong> Concrete pump delay on L18 cascades to plumbing rough-in by 3 days. 14 subcontractors notified.</div></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Live Activity Feed</span><span class="pill pg"><span class="pdot"></span>Live</span></div>
+            <div class="feed-item"><div class="fdot" style="background:var(--green)"></div><div><div style="font-size:13px;font-weight:500">L15 slab pour signed off &mdash; K. Nguyen</div><div class="text-sm text-muted mt8">09:42 AEST &middot; Digital signature #DS-4421</div></div></div>
+            <div class="feed-item"><div class="fdot" style="background:var(--red)"></div><div><div style="font-size:13px;font-weight:500">&#9888; Hazard #0847 &mdash; Exposed rebar Zone 4B</div><div class="text-sm text-muted mt8">09:15 AEST &middot; P. Santos (Electrician)</div></div></div>
+            <div class="feed-item"><div class="fdot" style="background:var(--amber)"></div><div><div style="font-size:13px;font-weight:500">Crane LTM 1130 &mdash; Maintenance alert</div><div class="text-sm text-muted mt8">08:58 AEST &middot; IoT vibration sensor</div></div></div>
+            <div class="feed-item"><div class="fdot" style="background:var(--green)"></div><div><div style="font-size:13px;font-weight:500">3 subcontractors GPS check-in verified</div><div class="text-sm text-muted mt8">08:30 AEST &middot; White Card + Induction &#10003;</div></div></div>
+            <div class="feed-item"><div class="fdot" style="background:var(--orange)"></div><div><div style="font-size:13px;font-weight:500">Progress Claim #7 auto-triggered &mdash; $140k</div><div class="text-sm text-muted mt8">Yesterday 17:02 AEST &middot; Linked to MYOB</div></div></div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Subcontractor Scores</span></div>
+            <table class="tbl"><thead><tr><th>Trade</th><th>Score</th><th></th></tr></thead><tbody>
+              <tr><td>Steel-fixers</td><td>94</td><td><span class="pill pg">Excellent</span></td></tr>
+              <tr><td>Electricians</td><td>81</td><td><span class="pill pg">Good</span></td></tr>
+              <tr><td>Plumbers</td><td>67</td><td><span class="pill pa">At Risk</span></td></tr>
+              <tr><td>Glaziers</td><td>72</td><td><span class="pill pa">Monitor</span></td></tr>
+              <tr><td>Concreters</td><td>89</td><td><span class="pill pg">Good</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Budget Burn Rate</span></div>
+            <div style="text-align:center;padding:10px 0">
+              <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700">$42.1M</div>
+              <div class="text-sm text-muted mb12">of $62.0M total budget</div>
+              <div class="pbar pb-lg"><div class="pfill co" style="width:68%"></div></div>
+              <div class="text-sm text-muted mt8">68% budget &middot; 68% complete &#10003; On track</div>
+            </div>
+            <div class="divider"></div>
+            <div class="row-sb text-sm"><span class="text-muted">Monthly burn</span><span>~$2.1M / month</span></div>
+            <div class="row-sb text-sm mt8"><span class="text-muted">Est. completion</span><span>Dec 2026</span></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Upcoming Inspections</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="background:var(--steel);border-radius:8px;padding:11px"><div class="row-sb mb8"><span class="fw6 text-sm">Structural &mdash; Level 18</span><span class="pill po"><span class="pdot"></span>Ready</span></div><div class="text-sm text-muted">Thu 5 Jun &middot; VBA Building Surveyor</div></div>
+              <div style="background:var(--steel);border-radius:8px;padding:11px"><div class="row-sb mb8"><span class="fw6 text-sm">Fire Services &mdash; L12&ndash;15</span><span class="pill pa"><span class="pdot"></span>Pending docs</span></div><div class="text-sm text-muted">Mon 9 Jun &middot; MFB Inspector</div></div>
+              <div style="background:var(--steel);border-radius:8px;padding:11px"><div class="row-sb mb8"><span class="fw6 text-sm">Plumbing Rough-in &mdash; L14</span><span class="pill pb"><span class="pdot"></span>Scheduled</span></div><div class="text-sm text-muted">Wed 18 Jun &middot; VBA Surveyor</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIGITAL TWIN TAB -->
+      <div id="pt-twin" class="pt" style="display:none">
+        <div class="page-title">Live Digital Twin</div>
+        <div class="page-sub">Real-time 3D BIM sync &middot; Zone hazard overlay &middot; Design vs as-built variance</div>
+        <div class="card mb12">
+          <div class="card-hd"><span class="card-title">Building Progress &mdash; Floor-by-Floor</span><button class="btn btn-g btn-sm"><i class="fas fa-expand"></i> Full 3D View</button></div>
+          <div class="twin-view">
+            <div class="twin-grid"></div>
+            <div class="bldg">
+              <div class="fl fl-done" style="width:172px">Basement &mdash; &#10003; Certified</div>
+              <div class="fl fl-done" style="width:167px">L1&ndash;7 &mdash; &#10003; Complete</div>
+              <div class="fl fl-done" style="width:161px">L8&ndash;11 &mdash; &#10003; Complete</div>
+              <div class="fl fl-done" style="width:156px">L12&ndash;17 &mdash; &#10003; Complete</div>
+              <div class="fl fl-active" style="width:151px">L18&ndash;29 &#9711; ACTIVE</div>
+              <div class="fl fl-pend" style="width:146px">L30&ndash;37 &mdash; Pending</div>
+              <div class="fl fl-pend" style="width:141px">L38&ndash;41 &mdash; Pending</div>
+              <div class="fl fl-pend" style="width:136px">L42 Rooftop &mdash; Pending</div>
+            </div>
+            <div style="position:absolute;top:12px;right:14px;display:flex;flex-direction:column;gap:6px">
+              <div class="text-sm row" style="gap:6px"><span style="color:var(--green)">&#9632;</span> Complete</div>
+              <div class="text-sm row" style="gap:6px"><span style="color:var(--orange)">&#9632;</span> Active</div>
+              <div class="text-sm row" style="gap:6px"><span style="color:var(--muted)">&#9632;</span> Pending</div>
+            </div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Zone Hazard Overlay</span></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="row-sb" style="padding:10px;background:rgba(232,64,64,.08);border-radius:8px;border:1px solid rgba(232,64,64,.2)"><div><div class="fw6 text-sm">Zone 4B &mdash; Level 18</div><div class="text-sm text-muted">Exposed rebar &mdash; access restricted</div></div><span class="pill pr"><span class="pdot"></span>Cordoned</span></div>
+              <div class="row-sb" style="padding:10px;background:rgba(245,166,35,.06);border-radius:8px;border:1px solid rgba(245,166,35,.15)"><div><div class="fw6 text-sm">Zone 2A &mdash; Level 14</div><div class="text-sm text-muted">Wet concrete &mdash; caution area</div></div><span class="pill pa"><span class="pdot"></span>Caution</span></div>
+              <div class="row-sb" style="padding:10px;background:rgba(34,211,126,.04);border-radius:8px"><div><div class="fw6 text-sm">All other zones</div><div class="text-sm text-muted">L1&ndash;42 except above</div></div><span class="pill pg"><span class="pdot"></span>Clear</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Design vs As-Built Variance</span></div>
+            <table class="tbl"><thead><tr><th>Element</th><th>Variance</th><th>Status</th></tr></thead><tbody>
+              <tr><td>Core wall L18</td><td>+2mm</td><td><span class="pill pg">Within spec</span></td></tr>
+              <tr><td>Slab thickness L17</td><td>+5mm</td><td><span class="pill pa">Under review</span></td></tr>
+              <tr><td>Column spacing B2</td><td>0mm</td><td><span class="pill pg">Perfect</span></td></tr>
+              <tr><td>Beam depth L14</td><td>-1mm</td><td><span class="pill pg">Within spec</span></td></tr>
+            </tbody></table>
+            <div class="alert ab mt12"><i class="fas fa-info-circle" style="color:var(--blue)"></i><div class="text-sm">BIM synced from Autodesk Revit. AR markers updated on all site kiosks.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MILESTONES TAB -->
+      <div id="pt-milestones" class="pt" style="display:none">
+        <div class="page-title">Milestone Management</div>
+        <div class="page-sub">Project lifecycle &middot; Inspection-ready workflow &middot; Defect-to-payment linkage</div>
+        <div class="ms-item">
+          <div class="ms-ico mi-done"><i class="fas fa-check"></i></div>
+          <div class="ms-body"><div class="ms-title">Substructure &amp; Basement Complete</div><div class="ms-meta">Signed off 14 Mar 2025 &middot; VBA Certified &middot; Digital Compliance Packet archived</div></div>
+          <div class="ms-actions"><span class="pill pg">Complete</span></div>
+        </div>
+        <div class="ms-item">
+          <div class="ms-ico mi-done"><i class="fas fa-check"></i></div>
+          <div class="ms-body"><div class="ms-title">Level 1&ndash;17 Structural Frame</div><div class="ms-meta">Signed off 2 May 2025 &middot; Inspector: D. Walsh &middot; Progress Claim #5 auto-triggered</div></div>
+          <div class="ms-actions"><span class="pill pg">Complete</span></div>
+        </div>
+        <div class="ms-item" style="border-color:rgba(232,88,28,.3);background:rgba(232,88,28,.03)">
+          <div class="ms-ico mi-active"><i class="fas fa-hard-hat"></i></div>
+          <div class="ms-body"><div class="ms-title">Level 18&ndash;29 Structural Frame</div><div class="ms-meta">In progress &middot; Target: 28 Jun 2025 &middot; &#9888; 2-day delay risk on critical path</div></div>
+          <div class="ms-actions">
+            <button class="btn btn-g btn-sm"><i class="fas fa-folder-open"></i> Compliance Packet</button>
+            <button class="btn btn-p btn-sm"><i class="fas fa-paper-plane"></i> Request Inspection</button>
+          </div>
+        </div>
+        <div class="ms-item" style="opacity:.5">
+          <div class="ms-ico mi-pend"><i class="fas fa-lock"></i></div>
+          <div class="ms-body"><div class="ms-title">MEP Rough-in &mdash; Electrical, Plumbing, HVAC</div><div class="ms-meta">Locked &middot; Awaiting L18&ndash;29 structural sign-off</div></div>
+          <div class="ms-actions"><span class="pill pb">Pending</span></div>
+        </div>
+        <div class="ms-item" style="opacity:.45">
+          <div class="ms-ico mi-pend"><i class="fas fa-lock"></i></div>
+          <div class="ms-body"><div class="ms-title">Curtain Wall &amp; External Cladding</div><div class="ms-meta">Locked &middot; Pending MEP rough-in clearance</div></div>
+          <div class="ms-actions"><span class="pill pb">Pending</span></div>
+        </div>
+        <div class="ms-item" style="opacity:.4">
+          <div class="ms-ico mi-pend"><i class="fas fa-lock"></i></div>
+          <div class="ms-body"><div class="ms-title">Internal Fit-out &amp; Finishes</div><div class="ms-meta">Locked &middot; Target start Q2 2026</div></div>
+          <div class="ms-actions"><span class="pill pm">Future</span></div>
+        </div>
+        <div class="ms-item" style="opacity:.35">
+          <div class="ms-ico mi-pend"><i class="fas fa-flag-checkered"></i></div>
+          <div class="ms-body"><div class="ms-title">Practical Completion &amp; Digital Handover</div><div class="ms-meta">Final milestone &middot; Target December 2026 &middot; Digital Handover Manual auto-compiled</div></div>
+          <div class="ms-actions"><span class="pill pm">Future</span></div>
+        </div>
+        <div class="alert ab mt16"><i class="fas fa-link" style="color:var(--blue)"></i><div class="text-sm">Milestone sign-off triggers: Progress Claim &rarr; MYOB &middot; Compliance Packet &rarr; VBA &middot; Digital Twin update &rarr; BIM server &middot; Next-stage task unlock for subcontractors</div></div>
+      </div>
+
+      <!-- SCHEDULE TAB -->
+      <div id="pt-schedule" class="pt" style="display:none">
+        <div class="page-title">AI Predictive Scheduling</div>
+        <div class="page-sub">Dependency analysis &middot; Risk flagging &middot; Soft-booking engine</div>
+        <div class="alert aw mb12"><i class="fas fa-brain" style="color:var(--orange)"></i><div><strong>AI Cascade Alert:</strong> Structural inspection delay on L18 (+2d) has auto-flagged 6 dependent tasks. Electrical and plumbing rough-ins pushed 3 days. 14 subcontractors notified. Crane LTM 1130 soft-booked for 6 Jun 07:00.</div></div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Current Sprint &mdash; June 2025</span><button class="btn btn-g btn-sm"><i class="fas fa-upload"></i> Import MS Project / Primavera</button></div>
+          <table class="tbl"><thead><tr><th>Task</th><th>Trade</th><th>Planned</th><th>AI Forecast</th><th>Variance</th><th>Status</th></tr></thead><tbody>
+            <tr><td>L18 Formwork</td><td>Carpenters</td><td>2 Jun</td><td>4 Jun</td><td style="color:var(--amber)">+2d</td><td><span class="pill pa">Delayed</span></td></tr>
+            <tr><td>L18 Reinforcement Steel</td><td>Steel-fixers</td><td>5 Jun</td><td>7 Jun</td><td style="color:var(--amber)">+2d</td><td><span class="pill pa">Pushed</span></td></tr>
+            <tr><td>L18 Concrete Slab Pour</td><td>Concreters</td><td>10 Jun</td><td>12 Jun</td><td style="color:var(--amber)">+2d</td><td><span class="pill pa">Pushed</span></td></tr>
+            <tr><td>L18 Electrical Rough-in</td><td>Electricians</td><td>14 Jun</td><td>17 Jun</td><td style="color:var(--red)">+3d</td><td><span class="pill pr">At Risk</span></td></tr>
+            <tr><td>L18 Plumbing Rough-in</td><td>Plumbers</td><td>14 Jun</td><td>17 Jun</td><td style="color:var(--red)">+3d</td><td><span class="pill pr">At Risk</span></td></tr>
+            <tr><td>Crane LTM 1130 Soft-book</td><td>Plant Ops</td><td>6 Jun 07:00</td><td>6 Jun 07:00</td><td style="color:var(--green)">0</td><td><span class="pill pg">Confirmed</span></td></tr>
+            <tr><td>Concrete Delivery Slot #3</td><td>Logistics</td><td>12 Jun 06:00</td><td>12 Jun 08:00</td><td style="color:var(--amber)">+2h</td><td><span class="pill pa">Adjusted</span></td></tr>
+            <tr><td>L15 Fire Sprinkler Fit-out</td><td>Fire Services</td><td>8 Jun</td><td>8 Jun</td><td style="color:var(--green)">0</td><td><span class="pill pg">On track</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+
+      <!-- CLAIMS TAB -->
+      <div id="pt-claims" class="pt" style="display:none">
+        <div class="page-title">Progress Claims &mdash; Financial Velocity</div>
+        <div class="page-sub">Automated milestone-linked payments &middot; Synced to MYOB Acumatica</div>
+        <div class="stat-grid">
+          <div class="sc g"><div class="sc-num" style="color:var(--green)">$8.4M</div><div class="sc-lbl">Total Claimed</div></div>
+          <div class="sc a"><div class="sc-num" style="color:var(--amber)">$3.76M</div><div class="sc-lbl">Processing</div></div>
+          <div class="sc b"><div class="sc-num" style="color:var(--blue)">$4.2M</div><div class="sc-lbl">Next Claim</div></div>
+          <div class="sc o"><div class="sc-num">0</div><div class="sc-lbl">Payment Holds</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Claim History</span></div>
+          <table class="tbl"><thead><tr><th>#</th><th>Milestone</th><th>Subcontractor</th><th>Amount</th><th>Triggered</th><th>Status</th><th></th></tr></thead><tbody>
+            <tr><td>PC-001</td><td>Basement Complete</td><td>Hansen Yuncken</td><td>$820,000</td><td>14 Mar 2025</td><td><span class="pill pg">Paid</span></td><td><button class="btn btn-g btn-sm">Receipt</button></td></tr>
+            <tr><td>PC-002</td><td>L1&ndash;7 Frame</td><td>Multiplex</td><td>$2,140,000</td><td>28 Mar 2025</td><td><span class="pill pg">Paid</span></td><td><button class="btn btn-g btn-sm">Receipt</button></td></tr>
+            <tr><td>PC-005</td><td>L8&ndash;11 Frame</td><td>Multiplex</td><td>$1,680,000</td><td>22 Apr 2025</td><td><span class="pill pg">Paid</span></td><td><button class="btn btn-g btn-sm">Receipt</button></td></tr>
+            <tr><td>PC-007</td><td>L12&ndash;17 Frame + Slab</td><td>Multiplex</td><td>$3,760,000</td><td>2 May 2025</td><td><span class="pill pa">Processing</span></td><td><button class="btn btn-g btn-sm">Track</button></td></tr>
+            <tr><td>PC-008</td><td>L18&ndash;29 Frame (pending)</td><td>TBA</td><td>$4,200,000</td><td>&mdash;</td><td><span class="pill pb">Not triggered</span></td><td>&mdash;</td></tr>
+          </tbody></table>
+        </div>
+        <div class="alert ab mt12"><i class="fas fa-robot" style="color:var(--blue)"></i><div class="text-sm">Defect tickets automatically place payment holds on affected work packages. Holds are released upon digital verification of rectification. Zero active holds today.</div></div>
+      </div>
+
+      <!-- SAFETY TAB -->
+      <div id="pt-safety" class="pt" style="display:none">
+        <div class="page-title">Safety Lifecycle Management</div>
+        <div class="page-sub">Hazard identification &rarr; investigation &rarr; resolution &middot; SWMS audit trail</div>
+        <div class="stat-grid">
+          <div class="sc o"><div class="sc-num" style="color:var(--red)">1</div><div class="sc-lbl">Critical Open</div></div>
+          <div class="sc a"><div class="sc-num" style="color:var(--amber)">2</div><div class="sc-lbl">High Risk Open</div></div>
+          <div class="sc g"><div class="sc-num" style="color:var(--green)">7</div><div class="sc-lbl">Resolved This Week</div></div>
+          <div class="sc b"><div class="sc-num">94%</div><div class="sc-lbl">SWMS Compliance</div></div>
+        </div>
+        <div class="hz hz-r">
+          <div class="hz-ico hi-r"><i class="fas fa-triangle-exclamation"></i></div>
+          <div style="flex:1">
+            <div class="hz-title">Exposed rebar protruding 30cm &mdash; Zone 4B, Level 18</div>
+            <div class="hz-meta">Reported by P. Santos (Electrician) &middot; 09:15 AEST &middot; Zone auto-cordoned in Digital Twin &middot; AI incident report pre-filled</div>
+            <div class="row" style="gap:6px"><span class="pill pr"><span class="pdot"></span>Critical</span><span class="pill po">Zone 4B Locked</span><span class="pill po">EWP cert required</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+            <button class="btn btn-p btn-sm"><i class="fas fa-user-shield"></i> Assign Officer</button>
+            <button class="btn btn-g btn-sm"><i class="fas fa-file-lines"></i> Incident Report</button>
+          </div>
+        </div>
+        <div class="hz hz-a">
+          <div class="hz-ico hi-a"><i class="fas fa-wind"></i></div>
+          <div style="flex:1">
+            <div class="hz-title">High wind alert &mdash; Crane operations suspended (BOM forecast)</div>
+            <div class="hz-meta">Weather API trigger &middot; 65 km/h gusts forecast 13:00&ndash;16:00 AEST &middot; LTM 1130 auto-paused</div>
+            <div class="row" style="gap:6px"><span class="pill pa"><span class="pdot"></span>High Risk</span><span class="pill pa">Crane Suspended</span></div>
+          </div>
+          <button class="btn btn-g btn-sm">BOM Forecast</button>
+        </div>
+        <div class="hz hz-a">
+          <div class="hz-ico hi-a"><i class="fas fa-fire"></i></div>
+          <div style="flex:1">
+            <div class="hz-title">Hot work permit &mdash; Welding in Zone 3C requires verification</div>
+            <div class="hz-meta">Subcontractor T. Bui &middot; Confined space entry &middot; Awaiting active permit verification</div>
+            <div class="row" style="gap:6px"><span class="pill pa"><span class="pdot"></span>Pending</span><span class="pill po">Permit required</span></div>
+          </div>
+          <button class="btn btn-p btn-sm">Verify Permit</button>
+        </div>
+        <div class="hz hz-g">
+          <div class="hz-ico hi-g"><i class="fas fa-circle-check"></i></div>
+          <div style="flex:1">
+            <div class="hz-title">Scaffold edge protection gap &mdash; Zone 2C, Level 14</div>
+            <div class="hz-meta">Resolved by T. Abara &middot; 08:20 AEST &middot; Photo verification uploaded &middot; Root cause logged</div>
+            <span class="pill pg"><span class="pdot"></span>Resolved</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASSETS TAB -->
+      <div id="pt-assets" class="pt" style="display:none">
+        <div class="page-title">Asset Registry &mdash; Living Ledger</div>
+        <div class="page-sub">IoT telemetry &middot; Service history &middot; Utilisation heat maps &middot; Capacity planning</div>
+        <div class="g3">
+          <div class="asset-card">
+            <div class="asset-ico">&#127959;&#65039;</div>
+            <div class="asset-name">Liebherr LTM 1130-5.1</div>
+            <div class="asset-meta">SN: LH-2031-7742 &middot; Reg: VIC-CR-4412 &middot; Zone: Central lift</div>
+            <div class="meter"><div class="meter-row"><span>Engine Hours</span><span style="color:var(--amber)">1,842 / 2,000h</span></div><div class="pbar pb-sm"><div class="pfill ca" style="width:92%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Fuel Level</span><span>62%</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:62%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Hydraulic Pressure</span><span>Normal</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:70%"></div></div></div>
+            <div class="row mt8"><span class="pill pa"><span class="pdot"></span>Maintenance Due</span><span class="pill pa">Paused (wind)</span></div>
+          </div>
+          <div class="asset-card">
+            <div class="asset-ico">&#9881;&#65039;</div>
+            <div class="asset-name">Schwing S 58 SX Concrete Pump</div>
+            <div class="asset-meta">SN: SC-BP-9920 &middot; On hire from Coates &middot; Zone: L18</div>
+            <div class="meter"><div class="meter-row"><span>Pump Pressure</span><span>Normal 82 bar</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:55%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Hydraulic Temp</span><span>72&deg;C</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:48%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Utilisation today</span><span>88%</span></div><div class="pbar pb-sm"><div class="pfill co" style="width:88%"></div></div></div>
+            <span class="pill pg mt8"><span class="pdot"></span>Operational</span>
+          </div>
+          <div class="asset-card">
+            <div class="asset-ico">&#128679;</div>
+            <div class="asset-name">JLG 1930ES Scissor Lift</div>
+            <div class="asset-meta">Asset #UBA-SL-018 &middot; Owned &middot; Zone 2A, Level 14</div>
+            <div class="meter"><div class="meter-row"><span>Battery Level</span><span style="color:var(--amber)">38%</span></div><div class="pbar pb-sm"><div class="pfill ca" style="width:38%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Utilisation today</span><span>71%</span></div><div class="pbar pb-sm"><div class="pfill co" style="width:71%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Hours on platform</span><span>3.2h today</span></div><div class="pbar pb-sm"><div class="pfill cb" style="width:40%"></div></div></div>
+            <span class="pill pg mt8"><span class="pdot"></span>In Use</span>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="asset-card">
+            <div class="asset-ico">&#128295;</div>
+            <div class="asset-name">Hilti TE 60-ATC/AVR Drill</div>
+            <div class="asset-meta">Asset #UBA-DR-044 &middot; Checked out to A. Kowalski &middot; Zone 3A</div>
+            <div class="meter"><div class="meter-row"><span>Battery</span><span>91%</span></div><div class="pbar pb-sm"><div class="pfill cg" style="width:91%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Warranty remaining</span><span>18 months</span></div><div class="pbar pb-sm"><div class="pfill cb" style="width:75%"></div></div></div>
+            <span class="pill pg mt8"><span class="pdot"></span>Checked Out</span>
+          </div>
+          <div class="asset-card">
+            <div class="asset-ico">&#128699;</div>
+            <div class="asset-name">Caterpillar 320 Excavator</div>
+            <div class="asset-meta">SN: CAT-320-4491 &middot; On hire &middot; Basement zone</div>
+            <div class="meter"><div class="meter-row"><span>Fuel</span><span style="color:var(--amber)">44%</span></div><div class="pbar pb-sm"><div class="pfill ca" style="width:44%"></div></div></div>
+            <div class="meter"><div class="meter-row"><span>Engine hours</span><span>620 / 1000h</span></div><div class="pbar pb-sm"><div class="pfill co" style="width:62%"></div></div></div>
+            <span class="pill pm mt8"><span class="pdot"></span>Idle</span>
+          </div>
+          <div class="asset-card" style="background:rgba(34,211,126,.04);border-color:rgba(34,211,126,.2)">
+            <div class="asset-ico" style="background:rgba(34,211,126,.1)">&#128202;</div>
+            <div class="asset-name" style="color:var(--green)">Utilisation Heat Map</div>
+            <div class="asset-meta">AI capacity planning &middot; Live</div>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+              <div class="row-sb"><span class="text-muted text-sm">Main hoist</span><span class="pill pr">94% &mdash; Near limit</span></div>
+              <div class="row-sb"><span class="text-muted text-sm">Tower crane</span><span class="pill pa">78%</span></div>
+              <div class="row-sb"><span class="text-muted text-sm">Concrete pump</span><span class="pill pa">88%</span></div>
+              <div class="row-sb"><span class="text-muted text-sm">Scissor lifts (4&times;)</span><span class="pill pg">52%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBCONTRACTORS TAB -->
+      <div id="pt-subs" class="pt" style="display:none">
+        <div class="page-title">Subcontractor Management</div>
+        <div class="page-sub">AI ranking &middot; Milestone reliability &middot; Safety incident history &middot; Proximity scoring</div>
+        <div class="card">
+          <table class="tbl"><thead><tr><th>Company</th><th>Trade</th><th>Reliability</th><th>Safety Score</th><th>AI Rank</th><th>Zone</th><th>Status</th><th></th></tr></thead><tbody>
+            <tr><td class="fw6">PrecisionSteel Pty Ltd</td><td>Steel-fixers</td><td><div class="pbar pb-sm" style="width:80px"><div class="pfill cg" style="width:94%"></div></div></td><td>98/100</td><td><span class="pill pg">#1</span></td><td>Zone 3A, L18</td><td><span class="pill pg"><span class="pdot"></span>On-site</span></td><td><button class="btn btn-g btn-sm">View</button></td></tr>
+            <tr><td class="fw6">Voltex Electrical</td><td>Electricians</td><td><div class="pbar pb-sm" style="width:80px"><div class="pfill cg" style="width:81%"></div></div></td><td>91/100</td><td><span class="pill pg">#2</span></td><td>Zone 2B, L14</td><td><span class="pill pg"><span class="pdot"></span>On-site</span></td><td><button class="btn btn-g btn-sm">View</button></td></tr>
+            <tr><td class="fw6">AquaFlow Plumbing</td><td>Plumbers</td><td><div class="pbar pb-sm" style="width:80px"><div class="pfill ca" style="width:67%"></div></div></td><td>74/100</td><td><span class="pill pa">#4</span></td><td>&mdash;</td><td><span class="pill pa"><span class="pdot"></span>Delayed</span></td><td><button class="btn btn-g btn-sm">View</button></td></tr>
+            <tr><td class="fw6">GlazeTech Australia</td><td>Glaziers</td><td><div class="pbar pb-sm" style="width:80px"><div class="pfill ca" style="width:72%"></div></div></td><td>80/100</td><td><span class="pill pa">#3</span></td><td>&mdash;</td><td><span class="pill pb"><span class="pdot"></span>Not started</span></td><td><button class="btn btn-g btn-sm">View</button></td></tr>
+            <tr><td class="fw6">ConcreteFirst Pty</td><td>Concreters</td><td><div class="pbar pb-sm" style="width:80px"><div class="pfill cg" style="width:89%"></div></div></td><td>95/100</td><td><span class="pill pg">#1</span></td><td>Zone 1, L17</td><td><span class="pill pg"><span class="pdot"></span>On-site</span></td><td><button class="btn btn-g btn-sm">View</button></td></tr>
+          </tbody></table>
+        </div>
+        <div class="alert ab mt12"><i class="fas fa-robot" style="color:var(--blue)"></i><div class="text-sm">AI ranking weighs: milestone reliability (40%), safety history (30%), proximity (20%), equipment availability (10%). Updated every 24 hours.</div></div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div id="pt-profile" class="pt" style="display:none">
+        <div class="page-title">My Digital Passport</div>
+        <div class="page-sub">Credentials &middot; RBAC access permissions &middot; Site history</div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Profile</span><button class="btn btn-g btn-sm"><i class="fas fa-pen"></i> Update Profile</button></div>
+            <div class="row" style="gap:16px;margin-bottom:16px">
+              <div class="pf-av">JM</div>
+              <div><div style="font-size:18px;font-weight:600;margin-bottom:4px">James Miller</div><div class="text-sm text-muted mb8">Project Manager &middot; Southbank Tower</div><span class="pill pg"><span class="pdot"></span>Checked In &mdash; Zone 1, L18</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="cred-row"><span class="text-muted text-sm">Email</span><span class="text-sm">j.miller@urbanbuildai.com.au</span></div>
+            <div class="cred-row"><span class="text-muted text-sm">Phone</span><span class="text-sm">+61 412 000 111</span></div>
+            <div class="cred-row"><span class="text-muted text-sm">Employee ID</span><span class="text-sm">UBA-PM-0042</span></div>
+            <div class="cred-row"><span class="text-muted text-sm">Check-in</span><span class="text-sm">07:15 AEST &middot; GPS verified</span></div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><span class="card-title">Credentials &amp; Licenses</span></div>
+            <div class="cred-row"><span class="text-sm">White Card (General WHS)</span><span class="pill pg">Valid &middot; Lifetime</span></div>
+            <div class="cred-row"><span class="text-sm">High-risk Licence (DG &mdash; Dogging)</span><span class="pill pg">Valid &middot; Mar 2027</span></div>
+            <div class="cred-row"><span class="text-sm">Site Induction &mdash; Southbank</span><span class="pill pg">Valid &middot; Nov 2025</span></div>
+            <div class="cred-row"><span class="text-sm">First Aid Certificate</span><span class="pill pa">Renew by Sep 2025</span></div>
+            <div class="cred-row"><span class="text-sm">Working at Heights &mdash; Level 3</span><span class="pill pg">Valid &middot; Jun 2026</span></div>
+          </div>
+        </div>
+        <div class="card mt12">
+          <div class="card-hd"><span class="card-title">RBAC &mdash; Access Permissions</span></div>
+          <table class="tbl"><thead><tr><th>Module</th><th>Access Level</th><th>Granted by</th></tr></thead><tbody>
+            <tr><td>Dashboard &amp; Analytics</td><td><span class="pill pg">Full Read</span></td><td>UBA Admin</td></tr>
+            <tr><td>Milestone Sign-off</td><td><span class="pill pg">Approve</span></td><td>UBA Admin</td></tr>
+            <tr><td>Progress Claims</td><td><span class="pill pg">Initiate</span></td><td>Finance</td></tr>
+            <tr><td>AI Schedule Override</td><td><span class="pill pb">Suggest Only</span></td><td>CTO Policy</td></tr>
+            <tr><td>System Configuration</td><td><span class="pill pr">No Access</span></td><td>&mdash;</td></tr>
+            <tr><td>Audit Logs</td><td><span class="pill pr">No Access</span></td><td>&mdash;</td></tr>
+          </tbody></table>
+        </div>
+        <div class="row mt12">
+          <button class="btn btn-g"><i class="fas fa-key"></i> Change Password</button>
+          <button class="btn btn-g"><i class="fas fa-id-card"></i> Download Digital ID</button>
+          <button class="btn btn-g" onclick="goLogin()"><i class="fas fa-right-from-bracket"></i> Sign Out</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- =================== WORKER MOBILE =================== -->
+<div id="s-worker" class="screen">
+  <div style="text-align:center;margin-bottom:16px">
+    <div class="wordmark" style="font-size:20px">Urban<span>Build</span> AI</div>
+    <div class="text-sm text-muted" style="margin-top:5px">Worker Mobile Portal &middot; Southbank Tower</div>
+  </div>
+  <div class="mframe">
+    <div class="mhead mhead-orange">
+      <h3>&#128119; Site Portal</h3>
+      <p>GPS Geofencing Active &middot; Zone Verified</p>
+    </div>
+    <div class="mbody">
+      <div class="checkin-ok">
+        <h4>&#10003; Checked In &mdash; 07:32 AEST</h4>
+        <p>Zone 3A &middot; Level 14 &middot; White Card &#10003; &middot; Induction &#10003;</p>
+      </div>
+      <div class="mlabel">Today&rsquo;s AI Task Feed</div>
+      <div class="mtask">
+        <h5>Install conduit runs &mdash; Grid C4 to D6</h5>
+        <p>Zone 3A &middot; Est. 4.5h &middot; Scan QR for AR installation guide</p>
+        <div class="mtask-pills"><span class="pill po">Priority</span><span class="pill pb">AR Guide</span></div>
+      </div>
+      <div class="mtask dim">
+        <h5>Test circuits &mdash; L14 East wing</h5>
+        <p>Zone 3B &middot; Est. 2h &middot; Starts after prior task</p>
+      </div>
+      <div style="height:10px"></div>
+      <button class="mbtn mbtn-p" onclick="showScreen('hazard')">&#128247; Report Hazard / Geo-tag Photo</button>
+      <button class="mbtn mbtn-g">&#128269; Scan QR &mdash; AR Instructions</button>
+      <button class="mbtn mbtn-d">&#128680; Emergency Alert</button>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted)">Tap to check out at end of shift</div>
+    </div>
+  </div>
+  <div class="mback"><button class="btn btn-g btn-sm" onclick="goLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button></div>
+</div>
+
+<!-- =================== HAZARD REPORT =================== -->
+<div id="s-hazard" class="screen">
+  <div class="mframe">
+    <div class="mhead mhead-red">
+      <h3>&#9888;&#65039; Hazard Report</h3>
+      <p>Geo-tagged &middot; Notifies Safety Officer instantly</p>
+    </div>
+    <div class="mbody">
+      <label class="mlabel">Hazard Type</label>
+      <div class="htype-grid">
+        <div class="htype" onclick="selH(this)">&#9889; Electrical</div>
+        <div class="htype sel" onclick="selH(this)">&#128297; Structural</div>
+        <div class="htype" onclick="selH(this)">&#128293; Hot Work</div>
+        <div class="htype" onclick="selH(this)">&#128167; Spill / Chemical</div>
+      </div>
+      <label class="mlabel">Description</label>
+      <textarea class="mtext">Exposed rebar protruding 30cm at grid D4 — risk of impalement.</textarea>
+      <div class="geo-box">
+        <div class="geo-label">Auto-captured location</div>
+        <div class="fw6" style="font-size:13px">&#128205; Zone 4B &middot; Level 18 &middot; Southbank Tower</div>
+        <div class="text-sm text-muted" style="margin-top:4px">09:14:33 AEST &middot; 1 Jun 2025</div>
+      </div>
+      <div class="photo-box"><i class="fas fa-camera"></i> Photo attached: rebar_zone4b_0914.jpg</div>
+      <button class="mbtn mbtn-p" onclick="showScreen('hazard-confirm')">Submit &mdash; Notify Safety Officer</button>
+      <button class="mbtn mbtn-g" onclick="showScreen('worker')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== HAZARD CONFIRMED =================== -->
+<div id="s-hazard-confirm" class="screen">
+  <div class="mframe">
+    <div class="mhead mhead-green">
+      <h3>&#10003; Hazard Submitted</h3>
+      <p>Automated safety workflow initiated</p>
+    </div>
+    <div class="mbody">
+      <div class="fw6" style="font-size:13px;margin-bottom:12px">What happened automatically:</div>
+      <div class="confirm-step"><span class="ck">&#10003;</span><span>Zone 4B cordoned &amp; highlighted red in Digital Twin</span></div>
+      <div class="confirm-step"><span class="ck">&#10003;</span><span>Safety Officer T. Abara notified with geo-tagged photo</span></div>
+      <div class="confirm-step"><span class="ck">&#10003;</span><span>AI incident report pre-filled (weather, lighting, personnel)</span></div>
+      <div class="confirm-step"><span class="ck">&#10003;</span><span>Zone 4B digital access lock activated &mdash; EWP cert required</span></div>
+      <div class="confirm-step"><span class="ck">&#10003;</span><span>SWMS review queued for this hazard type</span></div>
+      <div class="hid-box">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Hazard Reference</div>
+        <div class="fw6">#HAZ-2025-0847 &nbsp;&middot;&nbsp; <span class="pill pr"><span class="pdot"></span>Critical</span></div>
+        <div class="text-sm text-muted" style="margin-top:6px">Track status in real-time on this app.</div>
+      </div>
+      <button class="mbtn mbtn-p" style="margin-top:12px" onclick="showScreen('worker')">Back to Task Feed</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== LOGISTICS =================== -->
+<div id="s-logistics" class="screen">
+  <div class="topnav">
+    <div class="wordmark wordmark-sm">Urban<span>Build</span> AI</div>
+    <div class="nav-center"><div class="live-dot"></div>Logistics &amp; Fleet &mdash; Southbank Tower</div>
+    <div class="nav-right"><span class="role-pill">Fleet Coordinator</span><div class="av-btn" onclick="goLogin()">LC</div></div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-section">Logistics</div>
+      <div class="nav-item active"><i class="fas fa-truck-fast"></i> Delivery Queue</div>
+      <div class="nav-item"><i class="fas fa-location-dot"></i> Live GPS Feeds</div>
+      <div class="nav-item"><i class="fas fa-box-open"></i> Slot Booking</div>
+      <div class="nav-item"><i class="fas fa-crane"></i> Crane Availability</div>
+      <div class="sb-section">Account</div>
+      <div class="nav-item" onclick="goLogin()"><i class="fas fa-sign-out-alt"></i> Sign Out</div>
+    </div>
+    <div class="main">
+      <div class="page-title">JIT Delivery Queue</div>
+      <div class="page-sub">Just-in-time slot management &middot; Live GPS tracking &middot; Crane availability sync</div>
+      <div class="stat-grid">
+        <div class="sc b"><div class="sc-num" style="color:var(--blue)">8</div><div class="sc-lbl">Deliveries Today</div></div>
+        <div class="sc g"><div class="sc-num" style="color:var(--green)">3</div><div class="sc-lbl">En Route Now</div></div>
+        <div class="sc a"><div class="sc-num" style="color:var(--amber)">2</div><div class="sc-lbl">Rescheduled</div></div>
+        <div class="sc o"><div class="sc-num">62%</div><div class="sc-lbl">Crane Utilisation</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Today&rsquo;s Delivery Slots</span><button class="btn btn-p btn-sm"><i class="fas fa-plus"></i> Add Slot</button></div>
+        <div class="del-row"><div class="del-ico"><i class="fas fa-truck"></i></div><div style="flex:1"><div class="fw6 text-sm">Ready-mix Concrete &mdash; 12m&#179;</div><div class="text-sm text-muted">ConcreteFirst Pty &middot; Est. arrival 06:00 &middot; <span style="color:var(--blue)">4.2km away</span></div></div><span class="pill pg"><span class="pdot"></span>On time</span><button class="btn btn-g btn-sm">GPS</button></div>
+        <div class="del-row"><div class="del-ico"><i class="fas fa-truck"></i></div><div style="flex:1"><div class="fw6 text-sm">Structural Steel &mdash; 8 tonne</div><div class="text-sm text-muted">PrecisionSteel Pty &middot; Est. 08:30 &middot; Crane required on arrival</div></div><span class="pill pg"><span class="pdot"></span>Confirmed</span><button class="btn btn-g btn-sm">GPS</button></div>
+        <div class="del-row"><div class="del-ico"><i class="fas fa-truck"></i></div><div style="flex:1"><div class="fw6 text-sm">Curtain Wall Panels &mdash; 24 units</div><div class="text-sm text-muted">GlazeTech &middot; Was 10:00 &middot; Rescheduled &mdash; crane wind suspension</div></div><span class="pill pa"><span class="pdot"></span>Rescheduled &rarr; 16:00</span><button class="btn btn-g btn-sm">Adjust</button></div>
+        <div class="del-row"><div class="del-ico"><i class="fas fa-truck"></i></div><div style="flex:1"><div class="fw6 text-sm">Formwork Timber &mdash; 3 pallets</div><div class="text-sm text-muted">BuildSupply AU &middot; Arriving 13:00 &middot; Zone 4B &mdash; hold pending safety clearance</div></div><span class="pill pr"><span class="pdot"></span>Hold &mdash; Zone 4B locked</span><button class="btn btn-d btn-sm">Postpone</button></div>
+      </div>
+      <button class="btn btn-g mt12" onclick="goLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== SAFETY OFFICER =================== -->
+<div id="s-safety" class="screen">
+  <div class="topnav">
+    <div class="wordmark wordmark-sm">Urban<span>Build</span> AI</div>
+    <div class="nav-center"><div class="live-dot"></div>Safety &amp; Compliance &mdash; Southbank Tower</div>
+    <div class="nav-right"><span class="role-pill">Safety Officer</span><div class="av-btn" onclick="goLogin()">SO</div></div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-section">Safety</div>
+      <div class="nav-item active"><i class="fas fa-triangle-exclamation"></i> Active Hazards</div>
+      <div class="nav-item"><i class="fas fa-file-shield"></i> SWMS Audit</div>
+      <div class="nav-item"><i class="fas fa-certificate"></i> Permit Control</div>
+      <div class="nav-item"><i class="fas fa-chart-bar"></i> Incident Analytics</div>
+      <div class="sb-section">Account</div>
+      <div class="nav-item" onclick="goLogin()"><i class="fas fa-sign-out-alt"></i> Sign Out</div>
+    </div>
+    <div class="main">
+      <div class="page-title">Safety Command &mdash; Compliance Officer View</div>
+      <div class="page-sub">Hazard lifecycle &middot; SWMS auditing &middot; Permit control &middot; Confined space / hot work</div>
+      <div class="stat-grid">
+        <div class="sc o"><div class="sc-num" style="color:var(--red)">1</div><div class="sc-lbl">Critical</div></div>
+        <div class="sc a"><div class="sc-num" style="color:var(--amber)">2</div><div class="sc-lbl">High Risk</div></div>
+        <div class="sc g"><div class="sc-num">94%</div><div class="sc-lbl">SWMS Compliance</div></div>
+        <div class="sc b"><div class="sc-num" style="color:var(--green)">7</div><div class="sc-lbl">Resolved This Week</div></div>
+      </div>
+      <div class="hz hz-r">
+        <div class="hz-ico hi-r"><i class="fas fa-triangle-exclamation"></i></div>
+        <div style="flex:1">
+          <div class="hz-title">ASSIGNED TO YOU &mdash; Exposed rebar, Zone 4B Level 18</div>
+          <div class="hz-meta">Reported 09:15 &middot; P. Santos &middot; Zone cordoned &middot; Incident #HAZ-2025-0847</div>
+          <div class="row" style="gap:6px"><span class="pill pr">Critical</span><span class="pill po">Zone Locked</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <button class="btn btn-p btn-sm"><i class="fas fa-clipboard-check"></i> Complete Investigation</button>
+          <button class="btn btn-d btn-sm"><i class="fas fa-lock-open"></i> Clear Zone 4B</button>
+        </div>
+      </div>
+      <div class="hz hz-a">
+        <div class="hz-ico hi-a"><i class="fas fa-fire"></i></div>
+        <div style="flex:1">
+          <div class="hz-title">Hot Work Permit pending &mdash; Zone 3C welding, T. Bui</div>
+          <div class="hz-meta">Awaiting SWMS verification &middot; Confined space entry protocol applies</div>
+          <div class="row" style="gap:6px"><span class="pill pa">Pending Cert</span></div>
+        </div>
+        <button class="btn btn-p btn-sm">Issue Permit</button>
+      </div>
+      <div class="card mt12">
+        <div class="card-hd"><span class="card-title">SWMS Audit Dashboard</span></div>
+        <table class="tbl"><thead><tr><th>Activity</th><th>Trade</th><th>Last Audited</th><th>Status</th></tr></thead><tbody>
+          <tr><td>Working at Heights (Level 18+)</td><td>All trades</td><td>Today 06:00</td><td><span class="pill pg">Compliant</span></td></tr>
+          <tr><td>Crane Lift Plan &mdash; LTM 1130</td><td>Plant Ops</td><td>Yesterday</td><td><span class="pill pg">Compliant</span></td></tr>
+          <tr><td>Confined Space Entry</td><td>Plumbers</td><td>28 May</td><td><span class="pill pa">Review due</span></td></tr>
+          <tr><td>Hot Work &mdash; Welding</td><td>Steel-fixers</td><td>Today</td><td><span class="pill pa">Permit pending</span></td></tr>
+        </tbody></table>
+      </div>
+      <button class="btn btn-g mt12" onclick="goLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== INSPECTOR =================== -->
+<div id="s-inspector" class="screen">
+  <div class="topnav">
+    <div class="wordmark wordmark-sm">Urban<span>Build</span> AI</div>
+    <div class="nav-center"><div class="live-dot"></div>Government Inspector Portal &mdash; Read Only</div>
+    <div class="nav-right"><span class="role-pill" style="background:rgba(34,211,126,.12);color:var(--green)">Inspector</span><div class="av-btn" onclick="goLogin()">GI</div></div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-section">Inspection</div>
+      <div class="nav-item active"><i class="fas fa-magnifying-glass"></i> Compliance Packets</div>
+      <div class="nav-item"><i class="fas fa-certificate"></i> Certifications</div>
+      <div class="nav-item"><i class="fas fa-cube"></i> BIM Snapshots</div>
+      <div class="nav-item"><i class="fas fa-flask"></i> Lab Test Results</div>
+      <div class="sb-section">Account</div>
+      <div class="nav-item" onclick="goLogin()"><i class="fas fa-sign-out-alt"></i> Sign Out</div>
+    </div>
+    <div class="main">
+      <div class="page-title">Inspection Portal &mdash; Read-Only Access</div>
+      <div class="page-sub">Digital Compliance Packets &middot; Structural data &middot; Material certifications &middot; Golden Thread</div>
+      <div class="alert ab mb12"><i class="fas fa-info-circle" style="color:var(--blue)"></i><div class="text-sm">Read-only access &mdash; Southbank Tower. All data maintained under the Golden Thread of Information standard and Australian Building Codes.</div></div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Digital Compliance Packets</span></div>
+        <table class="tbl"><thead><tr><th>Inspection</th><th>Scope</th><th>Contents</th><th>Date</th><th>Status</th><th></th></tr></thead><tbody>
+          <tr><td>Structural &mdash; L1&ndash;17</td><td>Frame + slab</td><td>BIM snapshots, geo-photos, lab tests, SWMS</td><td>2 May 2025</td><td><span class="pill pg">Certified</span></td><td><button class="btn btn-g btn-sm"><i class="fas fa-download"></i> Download</button></td></tr>
+          <tr><td>Structural &mdash; Basement</td><td>Substructure</td><td>BIM snapshots, concrete test reports, photos</td><td>14 Mar 2025</td><td><span class="pill pg">Certified</span></td><td><button class="btn btn-g btn-sm"><i class="fas fa-download"></i> Download</button></td></tr>
+          <tr><td>Structural &mdash; L18&ndash;29</td><td>Frame in progress</td><td>Partial BIM, geo-photos, ongoing</td><td>&mdash;</td><td><span class="pill po"><span class="pdot"></span>Packet ready</span></td><td><button class="btn btn-p btn-sm"><i class="fas fa-eye"></i> Review</button></td></tr>
+        </tbody></table>
+      </div>
+      <button class="btn btn-g mt12" onclick="goLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ADMIN =================== -->
+<div id="s-admin" class="screen">
+  <div class="topnav">
+    <div class="wordmark wordmark-sm">Urban<span>Build</span> AI</div>
+    <div class="nav-center"><div class="live-dot"></div>UBA Administration &mdash; System Control</div>
+    <div class="nav-right"><span class="role-pill" style="background:rgba(232,64,64,.12);color:var(--red)">Admin</span><div class="av-btn" onclick="goLogin()">AD</div></div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-section">System</div>
+      <div class="nav-item active"><i class="fas fa-shield-halved"></i> Security</div>
+      <div class="nav-item"><i class="fas fa-users-cog"></i> User Management</div>
+      <div class="nav-item"><i class="fas fa-plug-circle-bolt"></i> API Integrations</div>
+      <div class="sb-section">Compliance</div>
+      <div class="nav-item"><i class="fas fa-clipboard-list"></i> Audit Logs</div>
+      <div class="nav-item"><i class="fas fa-server"></i> Data Residency</div>
+      <div class="nav-item"><i class="fas fa-bell-concierge"></i> Notification Rules</div>
+      <div class="sb-section">Account</div>
+      <div class="nav-item" onclick="goLogin()"><i class="fas fa-sign-out-alt"></i> Sign Out</div>
+    </div>
+    <div class="main">
+      <div class="page-title">UBA System Administration</div>
+      <div class="page-sub">Security &middot; API integrations &middot; SOC2 compliance &middot; AU data residency &middot; Audit logs</div>
+      <div class="stat-grid">
+        <div class="sc g"><div class="sc-num" style="color:var(--green)">247</div><div class="sc-lbl">Active Users</div></div>
+        <div class="sc b"><div class="sc-num">99.97%</div><div class="sc-lbl">System Uptime</div></div>
+        <div class="sc g"><div class="sc-num" style="color:var(--green)">SOC2</div><div class="sc-lbl">Compliance Status</div></div>
+        <div class="sc o"><div class="sc-num">AU-EAST</div><div class="sc-lbl">Data Residency</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-hd"><span class="card-title">API Integrations</span><button class="btn btn-p btn-sm"><i class="fas fa-plus"></i> Add Integration</button></div>
+          <div class="api-row"><div><div class="api-name">MYOB Acumatica</div><div class="api-meta">Finance ERP &middot; Progress claims sync</div></div><span class="pill pg"><span class="pdot"></span>Connected</span></div>
+          <div class="api-row"><div><div class="api-name">Autodesk Revit</div><div class="api-meta">BIM / CAD design sync</div></div><span class="pill pg"><span class="pdot"></span>Connected</span></div>
+          <div class="api-row"><div><div class="api-name">BOM Weather API</div><div class="api-meta">Real-time weather &middot; Safety triggers</div></div><span class="pill pg"><span class="pdot"></span>Connected</span></div>
+          <div class="api-row"><div><div class="api-name">Primavera P6</div><div class="api-meta">Master schedule import</div></div><span class="pill pg"><span class="pdot"></span>Connected</span></div>
+          <div class="api-row"><div><div class="api-name">SAP S/4HANA</div><div class="api-meta">ERP &middot; Pending config</div></div><span class="pill pa"><span class="pdot"></span>Config needed</span></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><span class="card-title">Recent Audit Log</span></div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">09:42</span> &middot; K.Nguyen signed L15 slab (sig #DS-4421)</div>
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">09:15</span> &middot; Hazard #0847 created by P.Santos &middot; Zone 4B locked</div>
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">09:00</span> &middot; Progress Claim #7 auto-triggered to MYOB</div>
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">08:30</span> &middot; 3 GPS check-ins verified &mdash; credentials OK</div>
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">08:00</span> &middot; Daily SWMS compliance check &middot; 94% pass rate</div>
+            <div style="padding:8px 10px;background:var(--steel);border-radius:7px;font-size:12px"><span class="text-muted">00:00</span> &middot; Data residency check &middot; All data confirmed AU-EAST-1</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-g mt12" onclick="goLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('s-'+id);
+  if(el)el.classList.add('active');
+}
+function goLogin(){showScreen('login');}
+function doLogin(){
+  const r=document.getElementById('role-sel').value;
+  const map={pm:'pm',worker:'worker',safety:'safety',logistics:'logistics',admin:'admin',inspector:'inspector'};
+  showScreen(map[r]||'pm');
+  if(r==='pm')pmGo('overview');
+}
+function pmGo(tab){
+  document.querySelectorAll('#s-pm .nav-item').forEach(el=>el.classList.remove('active'));
+  const ni=document.getElementById('pnav-'+tab);
+  if(ni)ni.classList.add('active');
+  document.querySelectorAll('.pt').forEach(el=>el.style.display='none');
+  const te=document.getElementById('pt-'+tab);
+  if(te)te.style.display='block';
+}
+function selH(el){
+  document.querySelectorAll('.htype').forEach(h=>h.classList.remove('sel'));
+  el.classList.add('sel');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
